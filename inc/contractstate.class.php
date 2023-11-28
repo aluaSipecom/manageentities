@@ -56,7 +56,7 @@ class PluginManageentitiesContractState extends CommonDropdown {
                'type'  => 'bool'],
               ['name'  => 'color',
                'label' => __('Color', 'manageentities'),
-               'type'  => 'text'],
+               'type'  => 'color'],
       ];
    }
 
@@ -84,27 +84,21 @@ class PluginManageentitiesContractState extends CommonDropdown {
          'table'    => $this->getTable(),
          'field'    => 'color',
          'name'     => __('Color', 'manageentities'),
-         'datatype' => 'bool'
+         'datatype' => 'color'
       ];
 
       return $tab;
    }
 
    public function prepareInputForAdd($input) {
-      return $this->checkColor($input);
-   }
+      return $input; // No se realiza ninguna validación del color aquí
+  }
 
-   public function prepareInputForUpdate($input) {
-      return $this->checkColor($input);
-   }
+  public function prepareInputForUpdate($input) {
+      return $input; // No se realiza ninguna validación del color aquí
+  }
 
-   function checkColor($input) {
-      if (!preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $input['color'])) {
-         Session::addMessageAfterRedirect(__('Color field is not correct', 'manageentities'), true, ERROR);
-         return [];
-      }
-      return $input;
-   }
+  
 
    static function getOpenedStates() {
       $out  = [];

@@ -201,9 +201,22 @@ class PluginManageentitiesContract extends CommonDBTM {
       if ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
          echo "<tr class='tab_bg_1'><td>" . __('Mode of management', 'manageentities') . "</td>";
          echo "<td>";
-         PluginManageentitiesContract::dropdownContractManagement("management", $pluginContract['management']);
+         
+
+         /////////////////////////////////
+         $managementValue = isset($pluginContract['management']) ?
+         $pluginContract['management']:null;
+         PluginManageentitiesContract::dropdownContractManagement("management", $managementValue);
+
          echo "</td><td>" . __('Type of service contract', 'manageentities') . "</td><td>";
-         PluginManageentitiesContract::dropdownContractType("contract_type", $pluginContract['contract_type']);
+
+         ////////////
+         if (is_array($pluginContract)&& isset($pluginContract['contract_type'])){
+            PluginManageentitiesContract::dropdownContractType("contract_type", $pluginContract['contract_type']);
+         }else{
+            $defaultValue = 'default_value';
+            PluginManageentitiesContract::dropdownContractType("contract_type", $defaultValue);
+         }
          echo "</td></tr>";
       }
 
