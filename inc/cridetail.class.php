@@ -764,7 +764,10 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   // Set conso per techs
                   $tmp = self::setConso($dataTask['actiontime'], 0, $config, $dataCriDetail, $pluginContract, 1);
 
-                  $round = round($tmp, 2);
+                  $tmpFloat = floatval($tmp);
+
+                  // Usar la función round con el número convertido
+                  $round = round($tmpFloat, 2);
 
                   $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['conso'] += $PDF->TotalTpsPassesArrondis($round);
 
@@ -773,7 +776,22 @@ class PluginManageentitiesCriDetail extends CommonDBTM {
                   $conso += $PDF->TotalTpsPassesArrondis($round);
 
                   // Set depass per techs
-                  $left -= self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
+                 // Suponiendo que $left es una cadena y computeInDays() devuelve una cadena numérica
+                  // Convertir la cadena $left a un número de punto flotante (float)
+                  $leftNumeric = floatval($left);
+
+                  // Llamar a computeInDays() y almacenar el resultado
+                  $resultFromComputeInDays = self::computeInDays($dataTask['actiontime'], $config, $dataCriDetail, $pluginContract, 1);
+
+                  // Convertir el resultado de computeInDays() a un número de punto flotante (float)
+                  $resultAsNumber = floatval($resultFromComputeInDays); // o intval() si es un número entero
+
+                  // Restar el resultado al valor convertido de $left
+                  $leftNumeric -= $resultAsNumber;
+
+                  // Asignar el resultado nuevamente a $left si es necesario
+                  $left = strval($leftNumeric); // Convertir de nuevo a cadena si se necesita
+
                   if ($left <= 0) {
                      $conso_per_tech[$dataCriDetail['tickets_id']][$dataTask['users_id_tech']]['depass'] += abs($PDF->TotalTpsPassesArrondis($left));
                      $left                                                                               = 0;
