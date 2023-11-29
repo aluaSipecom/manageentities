@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.3');
+define('PLUGIN_MANAGEENTITIES_VERSION', '4.0.4');
 
 if (!defined("PLUGIN_MANAGEENTITIES_DIR")) {
    define("PLUGIN_MANAGEENTITIES_DIR", Plugin::getPhpDir("manageentities"));

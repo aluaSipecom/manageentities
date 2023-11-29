@@ -41,6 +41,7 @@ function plugin_manageentities_install() {
    if (!$DB->tableExists("glpi_plugin_manageentities_critypes")) {
 
       $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.0.sql");
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/empty-4.0.4.sql");
 
 
       $query = "INSERT INTO `glpi_plugin_manageentities_critypes` ( `id`, `name`) VALUES ('1', '" . __('Urgent intervention', 'manageentities') . "');";
@@ -161,6 +162,15 @@ function plugin_manageentities_install() {
 
    //version 4.0.0
    $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.0.sql");
+
+   //version 4.0.4
+   //$DB->tableExists("glpi_plugin_manageentities_companies"): Verifica si la tabla glpi_plugin_manageentities_companies existe en la base de datos.
+   // $DB->fieldExists("glpi_plugin_manageentities_companies", "logo_id"): Verifica si la tabla glpi_plugin_manageentities_companies tiene un campo llamado logo_id.
+   if ($DB->tableExists("glpi_plugin_manageentities_companies") && $DB->fieldExists("glpi_plugin_manageentities_companies", "logo_id")) {
+      $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
+   }
+  
+   $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
 
    if ($update) {
       $index = [
@@ -534,8 +544,8 @@ function plugin_manageentities_getDatabaseRelations() {
               "glpi_contacts"                             => ["glpi_plugin_manageentities_contacts" => "contacts_id"],
               "glpi_users"                                => ["glpi_plugin_manageentities_preferences"    => "users_id",
                                                               "glpi_plugin_manageentities_critechnicians" => "users_id"],
-              "glpi_documents"                            => ["glpi_plugin_manageentities_cridetails" => "documents_id",
-                                                              "glpi_plugin_manageentities_companies"  => "document_id"],
+              "glpi_documents" => ["glpi_plugin_manageentities_cridetails" => "documents_id",
+                                    "glpi_plugin_manageentities_companies"  => "documents_id"],
               "glpi_documentcategories"                   => ["glpi_plugin_manageentities_configs" => "documentcategories_id"],
               "glpi_tickets"                              => ["glpi_plugin_manageentities_critechnicians" => "tickets_id",
                                                               "glpi_plugin_manageentities_cridetails"     => "tickets_id"],
