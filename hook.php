@@ -170,7 +170,6 @@ function plugin_manageentities_install() {
       $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
    }
   
-   $DB->runFile(PLUGIN_MANAGEENTITIES_DIR . "/install/sql/update-4.0.4.sql");
 
    if ($update) {
       $index = [
