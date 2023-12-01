@@ -146,7 +146,17 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     */
    function CellValeur($w, $valeur, $align = '', $multH = 1, $bordure = 1, $souligne = false) {
       $this->SetFontNormale($souligne);
-      $this->Cell($w, $this->line_height * $multH, $valeur, $bordure, 0, $align);
+      if (is_string($valeur)) {
+         
+         $this->Cell($w, $this->line_height * $multH, utf8_decode($valeur), $bordure, 0, $align);
+     } else {
+         
+         $defaultText = ""; 
+         $this->Cell($w, $this->line_height * $multH, utf8_decode($defaultText), $bordure, 0, $align);
+         
+     }
+     
+
    }
 
    /**
@@ -475,10 +485,15 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
          if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
             $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
          } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-            $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
-         } else {
-            $this->CellValeur(95, $this->libelle_activite);
-         }
+            if (isset($this->libelle_activite[$l])) {
+                $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+            } else {
+                // Manejar el caso en el que la clave $l no existe en $this->libelle_activite
+                // Puede ser lanzar una advertencia, asignar un valor predeterminado, etc.
+                // Por ejemplo:
+                $this->CellValeur(95, $this->libelle_activite); // Puedes asignar un valor predeterminado
+            }
+        }
 
          $width = 0;
          if ($this->forfait) $width = 15;
