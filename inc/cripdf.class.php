@@ -734,7 +734,7 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /** Fonction permettant de dessiner la zone du cachet et du visa du client. */
    function CachetClient() {
       $tail_zone = 32.5;
-
+  
       // On teste s'il reste de la place.
       $this->TestBasDePageGenerique($tail_zone);
       $this->SetTextColor(255, 255, 255);
@@ -743,10 +743,17 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
       $this->SetY($this->GetY() + $this->line_height);
       $this->CellValeur($this->largeur_grande_cell / 2, '', '', 5.5); // Cachet client.
       $this->CellValeur($this->largeur_grande_cell / 2, '', '', 5.5); // Visa client.
+      
+      // Agregar línea horizontal en el cuadro de "Customer Visa"
+      $x1 = $this->GetX()-85; // Obtener la posición actual en X
+      $x2 = $x1 + $this->largeur_grande_cell / 2.5; // Calcular la posición final en X
+      $y = $this->GetY()+20; // Obtener la posición actual en Y
+      $this->Line($x1, $y, $x2, $y); // Dibujar la línea horizontal
+  
       $this->SetTextColor(0, 0, 0);
       $this->Ln();
-   }
-
+  }
+  
    /**
     * Test s'il reste de la place pour une zone non divisible en bas de page.
     *
