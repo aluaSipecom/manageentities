@@ -91,11 +91,11 @@ class PluginManageentitiesContractState extends CommonDropdown {
    }
 
    public function prepareInputForAdd($input) {
-      return $input; // No se realiza ninguna validación del color aquí
+      return $input; 
   }
 
   public function prepareInputForUpdate($input) {
-      return $input; // No se realiza ninguna validación del color aquí
+      return $input; 
   }
 
   
