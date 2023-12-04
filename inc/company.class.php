@@ -31,17 +31,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesCompany extends CommonDBTM {
+class PluginManageentitiesCompany extends CommonDBTM
+{
 
    static $rightname = 'plugin_manageentities';
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName($nb = 0) {
+   static function getTypeName($nb = 0)
+   {
       return _n('Company', 'Companies', $nb, 'manageentities');
    }
 
-   function rawSearchOptions() {
+   function rawSearchOptions()
+   {
       $tab = parent::rawSearchOptions();
 
       $tab[] = [
@@ -74,7 +77,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @return boolean item found
     * */
-   function showForm($ID, $options = []) {
+   function showForm($ID, $options = [])
+   {
       global $CFG_GLPI, $DB;
 
       if ($ID > 0) {
@@ -100,22 +104,26 @@ class PluginManageentitiesCompany extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Address') . "</td>";
       echo "<td>";
-      Html::textarea(['name'            => 'address',
-                      'value'           => $this->fields["address"],
-                      'cols'       => 40,
-                      'rows'       => 5,
-                      'enable_richtext' => false]);
+      Html::textarea([
+         'name'            => 'address',
+         'value'           => $this->fields["address"],
+         'cols'       => 40,
+         'rows'       => 5,
+         'enable_richtext' => false
+      ]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Comments') . "</td>";
       echo "<td>";
-      Html::textarea(['name'            => 'comment',
-                      'value'           => $this->fields["comment"],
-                      'cols'       => 40,
-                      'rows'       => 5,
-                      'enable_richtext' => false]);
+      Html::textarea([
+         'name'            => 'comment',
+         'value'           => $this->fields["comment"],
+         'cols'       => 40,
+         'rows'       => 5,
+         'enable_richtext' => false
+      ]);
       echo "</td>";
       echo "<td></td><td></td></tr>";
 
@@ -157,7 +165,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @param type $options
     */
-   static function addNewCompany($options = []) {
+   static function addNewCompany($options = [])
+   {
 
       $addButton = "";
 
@@ -169,7 +178,6 @@ class PluginManageentitiesCompany extends CommonDBTM {
          $addButton .= Html::hidden('company_id', ['value' => 'company']);
          $addButton .= Html::hidden('id', ['value' => '']);
          $addButton .= Html::submit(_sx('button', 'Add'), ['name' => 'add_company', 'class' => 'btn btn-primary']);
-
       }
 
       if (isset($options['title'])) {
@@ -189,7 +197,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
       }
    }
 
-   function setSessionValues() {
+   function setSessionValues()
+   {
       if (isset($_SESSION['plugin_manageentities']['company']) && !empty($_SESSION['plugin_manageentities']['company'])) {
          foreach ($_SESSION['plugin_manageentities']['company'] as $key => $val) {
             $this->fields[$key] = $val;
@@ -198,7 +207,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
       unset($_SESSION['plugin_manageentities']['company']);
    }
 
-   function prepareInputForUpdate($input) {
+   function prepareInputForUpdate($input)
+   {
 
       if (isset($input["_filename"])) {
          $plugin_company = new PluginManageentitiesCompany();
@@ -220,7 +230,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
       return $input;
    }
 
-   function prepareInputForAdd($input) {
+   function prepareInputForAdd($input)
+   {
 
       if (isset($input["_filename"])) {
          $tmp       = explode(".", $input["_filename"][0]);
@@ -233,7 +244,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
       return $input;
    }
 
-   function post_addItem($history = 1) {
+   function post_addItem($history = 1)
+   {
       $img = $this->addFiles($this->input);
       foreach ($img as $key => $name) {
          $this->fields['documents_id'] = $key;
@@ -241,7 +253,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
       }
    }
 
-   function post_updateItem($history = 1) {
+   function post_updateItem($history = 1)
+   {
       if ($this->fields['documents_id'] == 0) {
          $img = $this->addFiles($this->input);
          foreach ($img as $key => $name) {
@@ -260,7 +273,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     * @global type $CFG_GLPI
     *
     */
-   function addFiles(array $input, $options = []) {
+   function addFiles(array $input, $options = [])
+   {
       global $CFG_GLPI;
 
       $default_options = [
@@ -269,8 +283,10 @@ class PluginManageentitiesCompany extends CommonDBTM {
       ];
       $options         = array_merge($default_options, $options);
 
-      if (!isset($input['_filename'])
-          || (count($input['_filename']) == 0)) {
+      if (
+         !isset($input['_filename'])
+         || (count($input['_filename']) == 0)
+      ) {
          return $input;
       }
       $docadded     = [];
@@ -288,15 +304,25 @@ class PluginManageentitiesCompany extends CommonDBTM {
          // Crop/Resize image file if needed
          if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
             $image_coordinates = json_decode(urldecode($this->input['_coordinates'][$key]), true);
-            Toolbox::resizePicture($filename, $filename, $image_coordinates['img_w'], $image_coordinates['img_h'], $image_coordinates['img_y'], $image_coordinates['img_x'], $image_coordinates['img_w'], $image_coordinates['img_h'], 0);
+
+            // Usar las coordenadas de la imagen
+            $x = $image_coordinates['img_x'];
+            $y = $image_coordinates['img_y'];
+            $width = $image_coordinates['img_w'];
+            $height = $image_coordinates['img_h'];
+
+            Toolbox::resizePicture($filename, $filename, $width, $height, $x, $y, $width, $height, 0);
          } else {
-            //Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0, 0);
+            // Si no se proporcionan coordenadas, redimensionar a un ancho de 1000 píxeles (con coordenadas predeterminadas)
             Toolbox::resizePicture($filename, $filename, 1000, 0, 0, 0, 0, 0, 0);
          }
 
+
          //If file tag is present
-         if (isset($input['_tag_filename'])
-             && !empty($input['_tag_filename'][$key])) {
+         if (
+            isset($input['_tag_filename'])
+            && !empty($input['_tag_filename'][$key])
+         ) {
             $input['_tag'][$key] = $input['_tag_filename'][$key];
          }
 
@@ -311,17 +337,20 @@ class PluginManageentitiesCompany extends CommonDBTM {
                $docID = $doc->fields["id"];
             }
             // File already exist, we replace the tag by the existing one
-            if (isset($input['_tag'][$key])
-                && ($docID > 0)
-                && isset($input[$options['content_field']])) {
+            if (
+               isset($input['_tag'][$key])
+               && ($docID > 0)
+               && isset($input[$options['content_field']])
+            ) {
 
                $input[$options['content_field']]
-                                        = preg_replace('/' . Document::getImageTag($input['_tag'][$key]) . '/',
-                                                       Document::getImageTag($doc->fields["tag"]),
-                                                       $input[$options['content_field']]);
+                  = preg_replace(
+                     '/' . Document::getImageTag($input['_tag'][$key]) . '/',
+                     Document::getImageTag($doc->fields["tag"]),
+                     $input[$options['content_field']]
+                  );
                $docadded[$docID]['tag'] = $doc->fields["tag"];
             }
-
          } else {
             //TRANS: Default document to files attached to tickets : %d is the ticket id
             $input2["name"]                    = addslashes(sprintf(__('Logo %d', 'manageentities'), $this->getID()));
@@ -333,11 +362,13 @@ class PluginManageentitiesCompany extends CommonDBTM {
          }
 
          if ($docID > 0) {
-            if ($docitem->add(['documents_id'  => $docID,
-                               '_do_notif'     => $donotif,
-                               '_disablenotif' => $disablenotif,
-                               'itemtype'      => $this->getType(),
-                               'items_id'      => $this->getID()])) {
+            if ($docitem->add([
+               'documents_id'  => $docID,
+               '_do_notif'     => $donotif,
+               '_disablenotif' => $disablenotif,
+               'itemtype'      => $this->getType(),
+               'items_id'      => $this->getID()
+            ])) {
                $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]), stripslashes($doc->fields["filename"]));
 
                if (isset($input2["tag"])) {
@@ -363,7 +394,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @return string address
     */
-   static function getAddress($obj) {
+   static function getAddress($obj)
+   {
       $plugin_company = new PluginManageentitiesCompany();
       $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
@@ -392,7 +424,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @return type
     */
-   static function getLogo($obj) {
+   static function getLogo($obj)
+   {
       $plugin_company = new PluginManageentitiesCompany();
       $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
@@ -412,7 +445,6 @@ class PluginManageentitiesCompany extends CommonDBTM {
                }
             }
          }
-
       } else {
          if ($company["documents_id"] != 0) {
             $doc->getFromDB($company["documents_id"]);
@@ -429,7 +461,8 @@ class PluginManageentitiesCompany extends CommonDBTM {
     *
     * @return type
     */
-   static function getComment($obj) {
+   static function getComment($obj)
+   {
       $plugin_company = new PluginManageentitiesCompany();
       $company        = $plugin_company->find(['entity_id' => $obj->entite[0]->fields['id']]);
       $company        = reset($company);
@@ -451,5 +484,4 @@ class PluginManageentitiesCompany extends CommonDBTM {
       }
       return null;
    }
-
 }
