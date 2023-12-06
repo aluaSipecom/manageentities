@@ -254,7 +254,7 @@ class PluginManageentitiesCri extends CommonDBTM {
                               'value'             => Glpi\RichText\RichText::getSafeHtml($desc, true),
                               'enable_richtext'   => true,
                               'enable_fileupload' => false,
-                              'enable_images'     => false,
+                              'enable_images'     => true,
                               'rand'              => $rand_text,
                               'editor_id'         => 'comment' . $rand_text,
                            ]);
@@ -342,10 +342,17 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
-         if ($key == 'REPORT_DESCRIPTION') {
-            $p[$key] = urldecode($val);
+         if ($key === 'REPORT_DESCRIPTION' && substr($val, 0, 5) === 'data:') {
+             // Verifica si los datos comienzan con 'data:' (indicando que es una imagen en base64)
+             // Decodifica los datos de la imagen base64
+             $data = explode(',', $val);
+             $base64 = $data[1]; // El contenido base64 está en la segunda parte después de la coma
+             
+             // Decodifica el contenido base64 y reemplaza el valor en $p
+             $p[$key] = base64_decode($base64);
          }
-      }
+     }
+     
 
       // ajout de la configuration du plugin
       $config = PluginManageentitiesConfig::getInstance();
@@ -805,12 +812,12 @@ class PluginManageentitiesCri extends CommonDBTM {
 
             Html::textarea(['name'            => 'REPORT_DESCRIPTION',
                             'value'           => $p['REPORT_DESCRIPTION'],
-                            'display'           => 'none',
+                            'display'           => 'inline-block',
                             'cols'       => 100,
                             'rows'       => 8,
                             'enable_richtext' => true,
                             'enable_fileupload' => false,
-                            'enable_images'     => false,]);
+                            'enable_images'     => true,]);
             echo Html::hidden('INTERVENANTS', ['value' => $intervenants]);
             echo Html::hidden('documents_id', ['value' => $p['documents_id']]);
             echo Html::hidden('CONTRAT', ['value' => $p['CONTRAT']]);
