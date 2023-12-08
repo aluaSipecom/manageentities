@@ -31,7 +31,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
+class PluginManageentitiesCriPDF extends \Fpdf\Fpdf
+{
 
    /* Attributs d'un rapport envoyés par l'utilisateur avant la génération. */
 
@@ -45,7 +46,7 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /* Autres attributs, récupérés par exemple en base de donnée. */
    var $demande_associee  = "";   // Identifiant du ticket pour lequel on génére le rapport.
    var $intervenant       = "";        // Intervenant du ticket.
-   var $date_intervention = null;// Tableau de 3 éléments (0 --> année et mois; 1 --> du; 2 --> au).
+   var $date_intervention = null; // Tableau de 3 éléments (0 --> année et mois; 1 --> du; 2 --> au).
    var $entite            = null;           // Tableau de 3 élements : entity, entitydata et contrat.
    var $temps_passes      = null;     // Tableau des temps passés sur l'intervention.
    var $forfait           = false;         // Type de contrat forfait
@@ -71,20 +72,23 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /* ************************************* */
 
    /** Fonction permettant de dessiner une ligne blanche séparatrice. */
-   function Separateur() {
+   function Separateur()
+   {
       $this->Cell($this->largeur_grande_cell, $this->line_height, '', 0, 0, '');
       $this->SetY($this->GetY() + $this->line_height);
    }
 
    /** Positionne la couleur de fond en gris clair. */
-   function SetFondClair() {
+   function SetFondClair()
+   {
       //$this->SetFillColor(205, 205, 205);
       //$this->SetFillColor(58, 86, 147);
       $this->SetFillColor(100, 122, 157);
    }
 
    /** Positionne la couleur de fond en gris foncé. */
-   function SetFondFonce() {
+   function SetFondFonce()
+   {
       //$this->SetFillColor(85, 85, 85);
       $this->SetFillColor(205, 205, 205);
    }
@@ -94,7 +98,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $italic Vrai si c'est en italique, faux sinon.
     */
-   function SetFontLabel($italic) {
+   function SetFontLabel($italic)
+   {
       if ($italic) {
          $this->SetFont($this->pol_def, 'I', $this->tail_pol_def);
       } else {
@@ -107,7 +112,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $souligne Vrai si le texte sera souligné, faux sinon étant la valeur par défaut.
     */
-   function SetFontNormale($souligne = false) {
+   function SetFontNormale($souligne = false)
+   {
       if ($souligne) {
          $this->SetFont($this->pol_def, 'U', $this->tail_pol_def);
       } else {
@@ -127,7 +133,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     * @param $align Détermine l'alignement du texte dans la cellule.
     * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
     */
-   function CellLabel($italic, $w, $label, $multH = 1, $align = '', $bordure = 1) {
+   function CellLabel($italic, $w, $label, $multH = 1, $align = '', $bordure = 1)
+   {
       $this->SetFondClair();
       $this->SetFontLabel($italic);
       $this->Cell($w, $this->line_height * $multH, $label, $bordure, 0, $align, 1);
@@ -144,19 +151,10 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     * @param $bordure Détermine les bordures é positionner, par défaut, toutes.
     * @param $souligne Détermine si le contenu de la cellule est souligné.
     */
-   function CellValeur($w, $valeur, $align = '', $multH = 1, $bordure = 1, $souligne = false) {
+   function CellValeur($w, $valeur, $align = '', $multH = 1, $bordure = 1, $souligne = false)
+   {
       $this->SetFontNormale($souligne);
-      if (is_string($valeur)) {
-         
-         $this->Cell($w, $this->line_height * $multH, utf8_decode($valeur), $bordure, 0, $align);
-     } else {
-         
-         $defaultText = ""; 
-         $this->Cell($w, $this->line_height * $multH, utf8_decode($defaultText), $bordure, 0, $align);
-         
-     }
-     
-
+      $this->Cell($w, $this->line_height * $multH, $valeur, $bordure, 0, $align);
    }
 
    /**
@@ -164,7 +162,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $w Largeur de la cellule.
     */
-   function CellVideFoncee($w) {
+   function CellVideFoncee($w)
+   {
       $this->SetFondFonce();
       $this->Cell($w, $this->line_height, '', 1, 0, '', 1);
    }
@@ -176,7 +175,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /**
     * Fonction permettant de dessiner l'entéte du rapport.
     */
-   function Header() {
+   function Header()
+   {
       global $CFG_GLPI;
 
       /* Constantes pour les largeurs de cellules de l'entéte (doivent étre = $largeur_grande_cell). */
@@ -226,7 +226,7 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
          $this->SetY($this->GetY() + $this->line_height);
       } else {
          $config = PluginManageentitiesConfig::getInstance();
-         if(!$config->fields['disable_date_header']){
+         if (!$config->fields['disable_date_header']) {
             /* Date et heure. */
             $this->CellValeur($largeur_date, Toolbox::decodeFromUtf8(__('Created by', 'manageentities')) . ' :', 'C', 1, 'LTR', true); // Libellé pour la date.
             $this->SetY($this->GetY() + $this->line_height);
@@ -239,7 +239,7 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
             $this->SetX($largeur_titre + $largeur_logo + 10);
             $this->CellValeur($largeur_date, $this->GetHeureFormatee($aujour_hui), 'C', 1, 'LRB'); // Heure.
             $this->SetY($this->GetY() + $this->line_height);
-         } else{
+         } else {
             /* Empty */
             $this->CellValeur($largeur_date, "", 'C', 1, 'LTR', true); // Libellé pour la date.
             $this->SetY($this->GetY() + $this->line_height);
@@ -264,7 +264,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /**
     * Fonction permettant de dessiner le tableau des informations générales.
     */
-   function InfosGenerales() {
+   function InfosGenerales()
+   {
       /* Num de demande de support associé. */
       $this->SetTextColor(255, 255, 255);
       $this->SetFontNormale(false); // Repositionnement de la fonte normale.
@@ -330,7 +331,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     * Fonction permettant de dessiner le tableau des informations de l'entité
     * concernée par le rapport.
     */
-   function InfosEntite() {
+   function InfosEntite()
+   {
       global $DB;
 
       if (!isset($this->entite[0]->fields["id"])) $this->entite[0]->fields["id"] = 0;
@@ -379,7 +381,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     * @param $w Largeur totale.
     * @param $label Contenu de la seconde sous cellule.
     */
-   function CellContrat($cochee, $w, $label) {
+   function CellContrat($cochee, $w, $label)
+   {
 
       $largeur_symbol = 2.5;
 
@@ -400,7 +403,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     * Fonction permettant de dessiner les informations du contrat de l'entité
     * concernée par le rapport.
     */
-   function InfosContrats() {
+   function InfosContrats()
+   {
 
       $this->SetTextColor(255, 255, 255);
       /* Type de contrat. */
@@ -428,7 +432,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner l'entéte du tableau des temps passés. */
-   function TempsPassesEntete() {
+   function TempsPassesEntete()
+   {
       $config = PluginManageentitiesConfig::getInstance();
       /* Entéte du tableau des temps passés. */
       $width = 0;
@@ -472,7 +477,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner la zone des temps passés. */
-   function TempsPasses() {
+   function TempsPasses()
+   {
       $config = PluginManageentitiesConfig::getInstance();
 
       $_SESSION["glpi_plugin_manageentities_total"] = 0;
@@ -485,15 +491,15 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
          if ($config->fields['useprice'] == PluginManageentitiesConfig::NOPRICE) {
             $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
          } elseif ($config->fields['hourorday'] == PluginManageentitiesConfig::HOUR) {
-            if (isset($this->libelle_activite[$l])) {
-                $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
+            if (is_array($this->libelle_activite) && isset($this->libelle_activite[0])) {
+               // Verificar si $this->libelle_activite es un array y si tiene un elemento en el índice 0
+               $this->CellValeur(95, Toolbox::decodeFromUtf8($this->libelle_activite[$l]));
             } else {
-                // Manejar el caso en el que la clave $l no existe en $this->libelle_activite
-                // Puede ser lanzar una advertencia, asignar un valor predeterminado, etc.
-                // Por ejemplo:
-                $this->CellValeur(95, $this->libelle_activite); // Puedes asignar un valor predeterminado
+               // Manejar el caso en el que $this->libelle_activite no es un array o no tiene un elemento en el índice 0
+               // Puedes imprimir un mensaje de advertencia o manejar el flujo de manera adecuada
+               $this->CellValeur(95, '');
             }
-        }
+         }
 
          $width = 0;
          if ($this->forfait) $width = 15;
@@ -551,7 +557,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @return Le total arrondi selon la régle de gestion.
     */
-   function TotalTpsPassesArrondis($a_arrondir) {
+   function TotalTpsPassesArrondis($a_arrondir)
+   {
 
       $result = 0;
 
@@ -565,16 +572,12 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
       }
       if ($reste < $tranches_majorees[0]) {
          $result = $partie_entiere;
-
       } else if ($reste >= $tranches_majorees[0] && $reste < $tranches_majorees[1]) {
          $result = $partie_entiere + $this->tranches_arrondi[1];
-
       } else if ($reste >= $tranches_majorees[1] && $reste < $tranches_majorees[2]) {
          $result = $partie_entiere + $this->tranches_arrondi[2];
-
       } else if ($reste >= $tranches_majorees[2] && $reste < $tranches_majorees[3]) {
          $result = $partie_entiere + $this->tranches_arrondi[3];
-
       } else {
          $result = $partie_entiere + $this->tranches_arrondi[4];
       }
@@ -583,7 +586,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de gérer un saut de page pour la zone des temps passés. */
-   function TestBasDePageTpsPasses() {
+   function TestBasDePageTpsPasses()
+   {
 
       if ($this->GetSeuilSaut() < $this->line_height) {
          $this->AddPage();
@@ -594,7 +598,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner l'entéte du tableau du détail des travaux réalisés. */
-   function DetailTravauxEntete() {
+   function DetailTravauxEntete()
+   {
       $this->SetTextColor(255, 255, 255);
       $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Detail of work done', 'manageentities')), 1, 'C');
       $this->SetY($this->GetY() + $this->line_height);
@@ -607,7 +612,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $description Texte é afficher dans la zone de détail.
     */
-   function DetailTravaux() {
+   function DetailTravaux()
+   {
 
       // Entéte du tableau des temps passés.
       $this->DetailTravauxEntete();
@@ -631,7 +637,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $une_ligne Ligne é tester.
     */
-   function TestBasDePageDetailTravaux($une_ligne) {
+   function TestBasDePageDetailTravaux($une_ligne)
+   {
 
       $nb_lg_necessaires = 1;
       if (strlen($une_ligne) > $this->nb_carac_ligne) {
@@ -647,7 +654,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner la zone pour les observations du client. */
-   function Observations() {
+   function Observations()
+   {
       $tail_zone    = 30;
       $ligne_points = '...........................................';
 
@@ -675,7 +683,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner l'entéte du tableau des commentaires de la société. */
-   function DetailCommentaires() {
+   function DetailCommentaires()
+   {
       $this->SetTextColor(255, 255, 255);
       $this->CellLabel(false, $this->largeur_grande_cell, Toolbox::decodeFromUtf8(__('Comments')), 1, 'C');
       $this->SetY($this->GetY() + $this->line_height);
@@ -689,7 +698,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $description Texte é afficher dans la zone de détail.
     */
-   function Commentaires() {
+   function Commentaires()
+   {
 
       $plugin_company = new PluginManageentitiesCompany();
       $comment        = $plugin_company->getComment($this);
@@ -716,7 +726,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $une_ligne Ligne é tester.
     */
-   function TestBasDePageCommentaires($une_ligne) {
+   function TestBasDePageCommentaires($une_ligne)
+   {
 
       $nb_lg_necessaires = 1;
       if (strlen($une_ligne) > $this->nb_carac_ligne) {
@@ -759,7 +770,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @param $tail_zone Taille de la zone pour laquelle on souhaite savoir s'il reste de la place.
     */
-   function TestBasDePageGenerique($tail_zone) {
+   function TestBasDePageGenerique($tail_zone)
+   {
 
       if ($this->GetSeuilSaut() < $tail_zone) {
          $this->AddPage();
@@ -770,13 +782,20 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /**
     * Fonction permettant de dessiner le pied de page du rapport.
     */
-   function Footer() {
+   function Footer()
+   {
       // Positionnement par rapport au bas de la page.
       $this->SetY(-$this->tail_bas_page);
       /* Numéro de page. */
       $this->SetFont($this->pol_def, '', 9);
       $this->Cell(
-         0, $this->tail_bas_page / 2, Toolbox::decodeFromUtf8(__('Page', 'manageentities')) . ' ' . $this->PageNo() . ' ' . Toolbox::decodeFromUtf8(__('on', 'manageentities')) . ' {nb}', 0, 0, 'C');
+         0,
+         $this->tail_bas_page / 2,
+         Toolbox::decodeFromUtf8(__('Page', 'manageentities')) . ' ' . $this->PageNo() . ' ' . Toolbox::decodeFromUtf8(__('on', 'manageentities')) . ' {nb}',
+         0,
+         0,
+         'C'
+      );
       $this->Ln(10);
       /* Infos company. */
       $this->SetFont($this->pol_def, 'I', 9);
@@ -804,7 +823,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    }
 
    /** Fonction permettant de dessiner le rapport partie par partie. */
-   function DrawCri() {
+   function DrawCri()
+   {
 
       $this->AliasNbPages(); // Pour initialiser le nombre de page.
       $this->AddPage(); // La premiére page.
@@ -840,7 +860,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @return La date donnée au format dd/mm/yyyy.
     */
-   function GetDateFormatee($une_date) {
+   function GetDateFormatee($une_date)
+   {
 
       return $this->CompleterAvec0($une_date['mday'], 2) . "/" . $this->CompleterAvec0($une_date['mon'], 2) . "/" . $une_date['year'];
    }
@@ -852,7 +873,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @return L'heure donnée au format hh:mm.
     */
-   function GetHeureFormatee($une_date) {
+   function GetHeureFormatee($une_date)
+   {
 
       return $this->CompleterAvec0($une_date['hours'], 2) . ":" . $this->CompleterAvec0($une_date['minutes'], 2);
    }
@@ -864,12 +886,13 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @return Le né de CRI généré.
     */
-   function GetNoCri($une_date = "") {
+   function GetNoCri($une_date = "")
+   {
 
       if ($this->no_cri == "" && $une_date != "") {
          $this->no_cri = substr($une_date['year'], 2) . $this->CompleterAvec0($une_date['mon'], 2)
-                         . $this->CompleterAvec0($une_date['mday'], 2) . "-" . $this->CompleterAvec0($une_date['hours'], 2)
-                         . $this->CompleterAvec0($une_date['minutes'], 2) . $this->CompleterAvec0($une_date['seconds'], 2);
+            . $this->CompleterAvec0($une_date['mday'], 2) . "-" . $this->CompleterAvec0($une_date['hours'], 2)
+            . $this->CompleterAvec0($une_date['minutes'], 2) . $this->CompleterAvec0($une_date['seconds'], 2);
       }
       return $this->no_cri;
    }
@@ -882,7 +905,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
     *
     * @return La chaéne complétée.
     */
-   function CompleterAvec0($une_chaine, $lg) {
+   function CompleterAvec0($une_chaine, $lg)
+   {
 
       while (strlen($une_chaine) != $lg) {
          $une_chaine = "0" . $une_chaine;
@@ -895,36 +919,42 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    /* Getteurs et setteurs. */
    /* ********************* */
 
-   function SetSousContrat($sous_contrat) {
+   function SetSousContrat($sous_contrat)
+   {
       $this->sous_contrat = $sous_contrat;
    }
 
-   function SetDeplacement($deplacement) {
+   function SetDeplacement($deplacement)
+   {
       $this->deplacement = $deplacement;
    }
 
-   function SetNombreDeplacement($nombredeplacement) {
+   function SetNombreDeplacement($nombredeplacement)
+   {
       $this->nombredeplacement = $nombredeplacement;
    }
 
-   function SetLibelleActivite($libelle_activite) {
+   function SetLibelleActivite($libelle_activite)
+   {
 
       $config = PluginManageentitiesConfig::getInstance();
 
       if (is_array($libelle_activite)) {
 
          $this->libelle_activite = $libelle_activite;
-
       } else if ($config->fields['hourorday'] == PluginManageentitiesConfig::DAY && is_integer($libelle_activite)) {
 
-         $this->libelle_activite = Toolbox::decodeFromUtf8(Dropdown::getDropdownName("glpi_plugin_manageentities_critypes",
-                                                                                     $libelle_activite));
+         $this->libelle_activite = Toolbox::decodeFromUtf8(Dropdown::getDropdownName(
+            "glpi_plugin_manageentities_critypes",
+            $libelle_activite
+         ));
       } else {
          $this->libelle_activite = Toolbox::decodeFromUtf8($libelle_activite);
       }
    }
 
-   function SetDescriptionCri($description_cri) {
+   function SetDescriptionCri($description_cri)
+   {
       $this->description_cri = $description_cri;
       $this->description_cri = Glpi\RichText\RichText::getTextFromHtml($this->description_cri);
       $this->description_cri = stripcslashes($this->description_cri);
@@ -935,45 +965,57 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
       $this->description_cri = Toolbox::decodeFromUtf8($this->description_cri);
    }
 
-   function SetIntervenant($intervenant) {
+   function SetIntervenant($intervenant)
+   {
       $this->intervenant = Toolbox::decodeFromUtf8($intervenant);
    }
 
-   function SetDemandeAssociee($demande_associee) {
+   function SetDemandeAssociee($demande_associee)
+   {
       $this->demande_associee = $demande_associee;
    }
 
-   function SetDateIntervention($date_intervention) {
+   function SetDateIntervention($date_intervention)
+   {
       // Les dates sont recues de la base directement et de la forme yyyy-mm-dd hh:mm.
       /* Année et mois de l'intervention. */
-      $this->date_intervention[0] = getdate(mktime(0, 0, 0,
-                                                   substr($date_intervention[0], 5, 2),
-                                                   substr($date_intervention[0], 8, 2),
-                                                   substr($date_intervention[0], 0, 4)));
+      $this->date_intervention[0] = getdate(mktime(
+         0,
+         0,
+         0,
+         substr($date_intervention[0], 5, 2),
+         substr($date_intervention[0], 8, 2),
+         substr($date_intervention[0], 0, 4)
+      ));
       /* Du et Au. */
       $this->date_intervention[1] = substr($date_intervention[1], 8, 2) . "/" . substr($date_intervention[1], 5, 2) . "/"
-                                    . substr($date_intervention[1], 0, 4);
+         . substr($date_intervention[1], 0, 4);
       $this->date_intervention[2] = substr($date_intervention[2], 8, 2) . "/" . substr($date_intervention[2], 5, 2) . "/"
-                                    . substr($date_intervention[2], 0, 4);
+         . substr($date_intervention[2], 0, 4);
    }
 
-   function SetEntite($entite) {
+   function SetEntite($entite)
+   {
       $this->entite = $entite;
    }
 
-   function SetTempsPasses($temps_passes) {
+   function SetTempsPasses($temps_passes)
+   {
       $this->temps_passes = $temps_passes;
    }
 
-   function GetSeuilSaut() {
+   function GetSeuilSaut()
+   {
       return (297 - $this->GetY() - $this->tail_bas_page);
    }
 
-   function setForfait() {
+   function setForfait()
+   {
       $this->forfait = true;
    }
 
-   function setIntervention() {
+   function setIntervention()
+   {
       $this->intervention = true;
    }
 
@@ -989,7 +1031,8 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
    // return [width, height]
 
    // ---------------------------------------------------
-   function fctaffichimage($img_Src, $W_max, $H_max) {
+   function fctaffichimage($img_Src, $W_max, $H_max)
+   {
 
       if (file_exists($img_Src)) {
          // ---------------------
@@ -1040,5 +1083,4 @@ class PluginManageentitiesCriPDF extends \Fpdf\Fpdf {
       }
       return [$W, $H];
    }
-
 }
