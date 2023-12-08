@@ -342,7 +342,7 @@ class PluginManageentitiesCri extends CommonDBTM {
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
-         if ($key === 'REPORT_DESCRIPTION' && substr($val, 0, 5) === 'data:') {
+         if (substr($val, 0, 5) === 'data:') {
              // Verifica si los datos comienzan con 'data:' (indicando que es una imagen en base64)
              // Decodifica los datos de la imagen base64
              $data = explode(',', $val);
@@ -350,6 +350,9 @@ class PluginManageentitiesCri extends CommonDBTM {
              
              // Decodifica el contenido base64 y reemplaza el valor en $p
              $p[$key] = base64_decode($base64);
+         }
+         if ($key == 'REPORT_DESCRIPTION') {
+            $p[$key] = urldecode($val);
          }
      }
      
